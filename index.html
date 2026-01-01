@@ -107,12 +107,9 @@
           return `Balanced across factors`;
         }
 
-        function generateClaimCode() {
-          const date = new Date().toISOString().slice(0,10).replace(/-/g,'');
-          const rand = Math.floor(1000 + Math.random() * 9000);
-          return `${CLAIM_MASTER.CLAIM_PREFIX}-${date}-${rand}`;
-        }
-
+       function generateClaimCode() {
+  return "L5-301-M2-COMPLETE-2025";
+}
         function qualifiesBronze(state) {
           return state.modelBuilt && state.modelLocked && state.reflectionSubmitted;
         }
