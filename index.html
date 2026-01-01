@@ -650,92 +650,42 @@
         }
 
         // PHASE 5: COMPLETION SCREEN
-        function CompletionScreen({ result, model }) {
-          const [email, setEmail] = useState('');
-          const [studentName, setStudentName] = useState('');
-          const [emailSent, setEmailSent] = useState(false);
-          const [sending, setSending] = useState(false);
+        // PHASE 5: COMPLETION SCREEN
+function CompletionScreen({ result, model }) {
+  const tierColor = result.tier === 'Gold' ? 'text-yellow-400' : result.tier === 'Silver' ? 'text-slate-300' : 'text-amber-600';
+  const tierDescription = result.tier === 'Gold' 
+    ? 'You demonstrated executive judgment — recognizing when a confident model stopped being a reliable guide.'
+    : result.tier === 'Silver'
+    ? 'You identified what your model missed when the world shifted.'
+    : 'You completed the simulation and experienced how models can become obsolete.';
 
-          const tierColor = result.tier === 'Gold' ? 'text-yellow-400' : result.tier === 'Silver' ? 'text-slate-300' : 'text-amber-600';
-          const tierDescription = result.tier === 'Gold' 
-            ? 'You demonstrated executive judgment — recognizing when a confident model stopped being a reliable guide.'
-            : result.tier === 'Silver'
-            ? 'You identified what your model missed when the world shifted.'
-            : 'You completed the simulation and experienced how models can become obsolete.';
+  return (
+    <div className="max-w-4xl mx-auto text-center">
+      <Trophy className={`w-24 h-24 mx-auto mb-6 ${tierColor}`} />
+      <h1 className="text-5xl font-bold text-white mb-8">Simulation Complete</h1>
+      
+      <div className="bg-slate-800 rounded-xl p-8 mb-8 border border-slate-700">
+        <div className="text-sm text-slate-400 uppercase tracking-wide mb-3">Claim Code</div>
+        <div className="text-3xl font-mono text-blue-400 mb-8 bg-slate-900 py-4 px-6 rounded-lg border border-blue-700">
+          {result.claimCode}
+        </div>
 
-          const sendCompletionEmail = async () => {
-            if (!email.trim() || !studentName.trim()) return;
+        <div className="text-sm text-slate-400 uppercase tracking-wide mb-3">Tier Earned</div>
+        <div className={`text-4xl font-bold mb-4 ${tierColor}`}>
+          {result.tier}
+        </div>
+        <p className="text-slate-300 max-w-2xl mx-auto">{tierDescription}</p>
+      </div>
+
+      <div className="bg-blue-900/30 rounded-xl p-6 border border-blue-700">
+        <p className="text-slate-300">
+          You've experienced how models work—and why they fail when the world changes.
+        </p>
+      </div>
+    </div>
+  );
+}
             
-            setSending(true);
-            const emailBody = `${studentName},
-
-You've completed the Build-a-Model experience. This email confirms your participation and provides your claim code for the record.
-
-Claim Code: ${result.claimCode}
-
-You built a model called "${model.name}" that evaluated players based on factors you selected. That model produced confident ratings—specific numbers, clear rankings, decisive outputs. That confidence came from the design: you chose what mattered, the model measured it perfectly, and the math did exactly what you told it to do. The model didn't know what it wasn't measuring. It couldn't.
-
-Different models built from the same data can disagree completely, and all of them can sound equally confident.
-
-— BOW Sports Capital`;
-
-            console.log('Email would be sent to:', email);
-            console.log('Subject: Your model is complete — claim code enclosed');
-            console.log('Body:', emailBody);
-            
-            setTimeout(() => {
-              setEmailSent(true);
-              setSending(false);
-            }, 1000);
-          };
-
-          return (
-            <div className="max-w-4xl mx-auto text-center">
-              <Trophy className={`w-24 h-24 mx-auto mb-6 ${tierColor}`} />
-              <h1 className="text-5xl font-bold text-white mb-8">Simulation Complete</h1>
-              
-              <div className="bg-slate-800 rounded-xl p-8 mb-8 border border-slate-700">
-                <div className="text-sm text-slate-400 uppercase tracking-wide mb-3">Claim Code</div>
-                <div className="text-3xl font-mono text-blue-400 mb-8 bg-slate-900 py-4 px-6 rounded-lg border border-blue-700">
-                  {result.claimCode}
-                </div>
-
-                <div className="text-sm text-slate-400 uppercase tracking-wide mb-3">Tier Earned</div>
-                <div className={`text-4xl font-bold mb-4 ${tierColor}`}>
-                  {result.tier}
-                </div>
-                <p className="text-slate-300 max-w-2xl mx-auto">{tierDescription}</p>
-              </div>
-
-              {!emailSent ? (
-                <div className="bg-slate-800 rounded-xl p-6 border border-slate-700 mb-6">
-                  <h3 className="text-lg font-semibold text-white mb-3">Receive Your Completion Record</h3>
-                  <p className="text-slate-400 text-sm mb-4">
-                    Enter your details to receive your claim code and a brief summary of what you just experienced.
-                  </p>
-                  <div className="max-w-md mx-auto space-y-3">
-                    <input type="text" value={studentName} onChange={(e) => setStudentName(e.target.value)} placeholder="Your name" className="w-full bg-slate-900 border border-slate-600 rounded-lg px-4 py-3 text-white placeholder-slate-500 focus:outline-none focus:border-blue-500" />
-                    <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="your.email@example.com" className="w-full bg-slate-900 border border-slate-600 rounded-lg px-4 py-3 text-white placeholder-slate-500 focus:outline-none focus:border-blue-500" />
-                    <button onClick={sendCompletionEmail} disabled={!email.trim() || !studentName.trim() || sending} className="w-full px-6 py-3 bg-blue-600 hover:bg-blue-700 disabled:bg-slate-700 disabled:text-slate-500 rounded-lg font-semibold transition">
-                      {sending ? 'Sending...' : 'Send Completion Email'}
-                    </button>
-                  </div>
-                </div>
-              ) : (
-                <div className="bg-green-900/30 rounded-xl p-6 border border-green-700 mb-6">
-                  <p className="text-green-400 font-semibold mb-2">✓ Email Sent</p>
-                  <p className="text-slate-300 text-sm">Check {email} for your completion record.</p>
-                </div>
-              )}
-
-              <div className="bg-blue-900/30 rounded-xl p-6 border border-blue-700">
-                <p className="text-slate-300">
-                  You've experienced how models work—and why they fail when the world changes.
-                </p>
-              </div>
-            </div>
-          );
-        }
 
         // MAIN APP
         function App() {
