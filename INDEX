@@ -1,0 +1,801 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The GM's Model - BOW Sports Capital</title>
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { margin: 0; padding: 0; }
+        * { box-sizing: border-box; }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+    
+    <script type="text/babel">
+        const { useState, useEffect } = React;
+        
+        // All Lucide icons as inline SVGs
+        const Lock = ({ className }) => <svg className={className} width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>;
+        const X = ({ className }) => <svg className={className} width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>;
+        const ChevronRight = ({ className }) => <svg className={className} width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="9 18 15 12 9 6"/></svg>;
+        const ChevronDown = ({ className }) => <svg className={className} width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="6 9 12 15 18 9"/></svg>;
+        const Eye = ({ className }) => <svg className={className} width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>;
+        const BarChart3 = ({ className }) => <svg className={className} width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>;
+        const Calendar = ({ className }) => <svg className={className} width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>;
+        const AlertCircle = ({ className }) => <svg className={className} width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>;
+        const CheckCircle = ({ className }) => <svg className={className} width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>;
+        const ArrowRight = ({ className }) => <svg className={className} width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>;
+        const Trophy = ({ className }) => <svg className={className} width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg>;
+        const Target = ({ className }) => <svg className={className} width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>;
+        const TrendingUp = ({ className }) => <svg className={className} width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>;
+        const Users = ({ className }) => <svg className={className} width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>;
+        const Shield = ({ className }) => <svg className={className} width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>;
+        const Zap = ({ className }) => <svg className={className} width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>;
+        const Award = ({ className }) => <svg className={className} width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="8" r="7"/><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"/></svg>;
+
+        const CLAIM_MASTER = {
+          SPREADSHEET_ID: "1F8j5GAgtfWejYybZmwUfhDeK2U-rNOxFhTieZOCyrXM",
+          SHEET_NAME: "Claim_Codes",
+          TRACK_ID: "301",
+          MODULE_ID: "2",
+          LESSON_ID: "5",
+          CLAIM_PREFIX: "L5-301-M2"
+        };
+
+        const FACTOR_CATEGORIES = {
+          offense: { name: 'Offensive Skills', description: 'Scoring, shooting, and offensive creation', color: 'bg-orange-600', textColor: 'text-orange-400' },
+          defense: { name: 'Defensive Skills', description: 'Defense, rebounding, and rim protection', color: 'bg-blue-600', textColor: 'text-blue-400' },
+          athletic: { name: 'Physical & Athletic', description: 'Speed, size, and physical tools', color: 'bg-purple-600', textColor: 'text-purple-400' },
+          intangible: { name: 'Intangibles', description: 'Leadership, clutch play, and team impact', color: 'bg-green-600', textColor: 'text-green-400' }
+        };
+
+        const AVAILABLE_FACTORS = [
+          { id: 'scoring_efficiency', name: 'Scoring Efficiency', category: 'offense', icon: Target },
+          { id: 'three_point', name: 'Three-Point Shooting', category: 'offense', icon: TrendingUp },
+          { id: 'playmaking', name: 'Playmaking Ability', category: 'offense', icon: Users },
+          { id: 'free_throw_rate', name: 'Free Throw Rate', category: 'offense', icon: TrendingUp },
+          { id: 'offensive_versatility', name: 'Offensive Versatility', category: 'offense', icon: Target },
+          { id: 'perimeter_defense', name: 'Perimeter Defense', category: 'defense', icon: Shield },
+          { id: 'interior_defense', name: 'Interior Defense', category: 'defense', icon: Shield },
+          { id: 'defensive_versatility', name: 'Defensive Versatility', category: 'defense', icon: Shield },
+          { id: 'defensive_iq', name: 'Defensive IQ', category: 'defense', icon: Shield },
+          { id: 'speed', name: 'Speed & Quickness', category: 'athletic', icon: Zap },
+          { id: 'size', name: 'Size & Length', category: 'athletic', icon: Zap },
+          { id: 'durability', name: 'Durability', category: 'athletic', icon: Zap },
+          { id: 'leadership', name: 'Leadership & Experience', category: 'intangible', icon: Award },
+          { id: 'clutch', name: 'Clutch Performance', category: 'intangible', icon: Award },
+          { id: 'team_fit', name: 'Team Fit & Chemistry', category: 'intangible', icon: Award }
+        ];
+
+        const PLAYERS = [
+          { id: 'p1', name: 'DeAndre Morrison', position: 'Center', age: 28, scoutingReport: 'Dominant interior presence with elite rim protection and rebounding.', stats: { scoring_efficiency: 82, three_point: 28, playmaking: 45, free_throw_rate: 75, offensive_versatility: 52, perimeter_defense: 38, interior_defense: 91, defensive_versatility: 48, defensive_iq: 78, speed: 42, size: 95, durability: 88, leadership: 72, clutch: 68, team_fit: 70 }, postShift: { outcome: 'struggled', reason: 'Lack of deep shooting became a major liability.', performanceDelta: -18 } },
+          { id: 'p2', name: 'Tyler Hayes', position: 'SG', age: 25, scoutingReport: 'Pure three-point specialist with exceptional range.', stats: { scoring_efficiency: 78, three_point: 93, playmaking: 58, free_throw_rate: 62, offensive_versatility: 71, perimeter_defense: 55, interior_defense: 32, defensive_versatility: 48, defensive_iq: 61, speed: 74, size: 62, durability: 79, leadership: 58, clutch: 81, team_fit: 75 }, postShift: { outcome: 'thrived', reason: 'Elite deep shooting made him a 4-point weapon.', performanceDelta: 28 } },
+          { id: 'p3', name: 'Marcus Williams', position: 'SF', age: 24, scoutingReport: 'High-motor defender with elite athleticism.', stats: { scoring_efficiency: 71, three_point: 68, playmaking: 72, free_throw_rate: 69, offensive_versatility: 84, perimeter_defense: 82, interior_defense: 58, defensive_versatility: 89, defensive_iq: 75, speed: 88, size: 78, durability: 91, leadership: 65, clutch: 70, team_fit: 80 }, postShift: { outcome: 'mixed', reason: 'Physical defense helped, but speed mattered less.', performanceDelta: 5 } },
+          { id: 'p4', name: 'Chris Patterson', position: 'PG', age: 32, scoutingReport: 'Veteran playmaker with exceptional court vision.', stats: { scoring_efficiency: 76, three_point: 74, playmaking: 92, free_throw_rate: 71, offensive_versatility: 79, perimeter_defense: 64, interior_defense: 28, defensive_versatility: 55, defensive_iq: 88, speed: 58, size: 51, durability: 72, leadership: 94, clutch: 89, team_fit: 91 }, postShift: { outcome: 'declined', reason: 'Physical play exposed his size.', performanceDelta: -14 } },
+          { id: 'p5', name: 'Jamal Rodriguez', position: 'G/F', age: 27, scoutingReport: 'Solid all-around player, ultimate glue guy.', stats: { scoring_efficiency: 77, three_point: 76, playmaking: 68, free_throw_rate: 70, offensive_versatility: 75, perimeter_defense: 76, interior_defense: 52, defensive_versatility: 78, defensive_iq: 72, speed: 79, size: 71, durability: 85, leadership: 68, clutch: 72, team_fit: 82 }, postShift: { outcome: 'steady', reason: 'Versatility kept him employed.', performanceDelta: 8 } },
+          { id: 'p6', name: 'Brandon Lee', position: 'SG', age: 26, scoutingReport: 'Efficient half-court scorer, isolation specialist.', stats: { scoring_efficiency: 88, three_point: 62, playmaking: 52, free_throw_rate: 82, offensive_versatility: 68, perimeter_defense: 58, interior_defense: 35, defensive_versatility: 51, defensive_iq: 55, speed: 72, size: 65, durability: 68, leadership: 61, clutch: 85, team_fit: 66 }, postShift: { outcome: 'declined', reason: 'Range stopped at 3-point line.', performanceDelta: -16 } },
+          { id: 'p7', name: 'Darius Grant', position: 'G/F', age: 26, scoutingReport: 'Lockdown defender with elite physical tools.', stats: { scoring_efficiency: 64, three_point: 58, playmaking: 61, free_throw_rate: 68, offensive_versatility: 55, perimeter_defense: 95, interior_defense: 71, defensive_versatility: 91, defensive_iq: 89, speed: 82, size: 84, durability: 86, leadership: 74, clutch: 67, team_fit: 78 }, postShift: { outcome: 'thrived', reason: 'Hand-checking made elite defenders premium.', performanceDelta: 24 } }
+        ];
+
+        const PEER_MODELS = [
+          { name: 'The Shooting Revolution', factors: ['three_point', 'offensive_versatility', 'speed', 'team_fit'], philosophy: 'Modern offense built on spacing' },
+          { name: 'Defense First', factors: ['perimeter_defense', 'defensive_versatility', 'defensive_iq', 'durability'], philosophy: 'Defense wins championships' },
+          { name: 'Complete Player', factors: ['playmaking', 'leadership', 'clutch', 'offensive_versatility'], philosophy: 'Intangibles win playoffs' }
+        ];
+
+        const CONTEXT_SHIFT = {
+          changes: ['4-Point Line at 30 feet', 'Hand-Checking Allowed', 'Physical defense back', 'Deep shooting premium'],
+          factorImpact: { scoring_efficiency: 0.85, three_point: 1.60, playmaking: 1.05, free_throw_rate: 1.20, offensive_versatility: 1.15, perimeter_defense: 1.35, interior_defense: 1.10, defensive_versatility: 1.20, defensive_iq: 1.05, speed: 0.90, size: 1.25, durability: 1.00, leadership: 1.00, clutch: 1.10, team_fit: 1.05 }
+        };
+
+        function calculateRating(player, model) {
+          const stats = model.factors.map(f => player.stats[f.id] || 0);
+          return Math.round(stats.reduce((a,b) => a+b, 0) / stats.length);
+        }
+
+        function getRatingExplanation(player, model) {
+          const topFactors = model.factors.map(f => ({name: f.name, value: player.stats[f.id]})).sort((a,b) => b.value - a.value);
+          const best = topFactors[0];
+          const worst = topFactors[topFactors.length - 1];
+          if (best.value >= 80) return `Strong ${best.name} (${best.value})`;
+          if (worst.value <= 50) return `Limited ${worst.name} (${worst.value})`;
+          return `Balanced across factors`;
+        }
+
+        function generateClaimCode() {
+          const date = new Date().toISOString().slice(0,10).replace(/-/g,'');
+          const rand = Math.floor(1000 + Math.random() * 9000);
+          return `${CLAIM_MASTER.CLAIM_PREFIX}-${date}-${rand}`;
+        }
+
+        function qualifiesBronze(state) {
+          return state.modelBuilt && state.modelLocked && state.reflectionSubmitted;
+        }
+
+        function qualifiesSilver(state, model) {
+          const modelFactorIds = model.factors.map(f => f.id);
+          const meaningfulLost = state.lostFactors.filter(f => modelFactorIds.includes(f)).length;
+          const meaningfulGained = state.gainedFactors.filter(f => !modelFactorIds.includes(f)).length;
+          return meaningfulLost >= 2 || meaningfulGained >= 2;
+        }
+
+        function qualifiesGold(state) {
+          const signals = [
+            state.lostFactors.length > 0,
+            state.gainedFactors.length > 0,
+            state.executiveSignals.recognizedChange,
+            state.executiveSignals.reframedModel
+          ];
+          return signals.filter(Boolean).length >= 3;
+        }
+
+        function finalizeCompletion(state, model) {
+          let tier = 'Bronze';
+          if (qualifiesSilver(state, model)) tier = 'Silver';
+          if (qualifiesGold(state)) tier = 'Gold';
+          return { tier, claimCode: generateClaimCode() };
+        }
+
+        // PHASE 1: MODEL BUILDER
+        function ModelBuilder({ onComplete }) {
+          const [modelName, setModelName] = useState('');
+          const [selectedFactors, setSelectedFactors] = useState([]);
+          const [openCategory, setOpenCategory] = useState(null);
+          const canLockIn = modelName.trim() && selectedFactors.length >= 3 && selectedFactors.length <= 5;
+
+          return (
+            <div className="max-w-6xl mx-auto">
+              <div className="text-center mb-12">
+                <h1 className="text-5xl font-bold text-blue-400 mb-4">Build Your Evaluation Model</h1>
+                <p className="text-xl text-slate-300">You're the GM. Create a model to evaluate free agents.</p>
+              </div>
+
+              <div className="bg-slate-800 rounded-xl p-8 mb-8 border border-slate-700">
+                <label className="block text-sm font-semibold text-slate-400 uppercase mb-3">Name Your Model</label>
+                <input type="text" value={modelName} onChange={(e) => setModelName(e.target.value)} placeholder="e.g., Championship Blueprint" className="w-full bg-slate-900 border-2 border-slate-600 rounded-lg px-6 py-4 text-2xl font-semibold text-white placeholder-slate-500 focus:outline-none focus:border-blue-500" />
+              </div>
+
+              <div className="bg-slate-800 rounded-xl p-8 mb-8 border border-slate-700">
+                <h2 className="text-2xl font-bold mb-2">Select 3-5 Factors</h2>
+                <p className="text-slate-400 mb-4">Selected: {selectedFactors.length}/5</p>
+
+                <div className="grid md:grid-cols-2 gap-4 mb-6">
+                  {Object.entries(FACTOR_CATEGORIES).map(([key, cat]) => (
+                    <button key={key} onClick={() => setOpenCategory(openCategory === key ? null : key)} className={`text-left p-6 rounded-lg border-2 ${openCategory === key ? `${cat.color} ring-2` : 'bg-slate-700 border-slate-600'}`}>
+                      <div className="text-lg font-bold">{cat.name}</div>
+                    </button>
+                  ))}
+                </div>
+
+                {openCategory && (
+                  <div className="bg-slate-900 rounded-lg p-6 border-2 border-slate-700">
+                    <div className="space-y-3">
+                      {AVAILABLE_FACTORS.filter(f => f.category === openCategory).map(factor => {
+                        const isSelected = selectedFactors.includes(factor.id);
+                        const Icon = factor.icon;
+                        return (
+                          <button key={factor.id} onClick={() => {
+                            if (isSelected) setSelectedFactors(selectedFactors.filter(id => id !== factor.id));
+                            else if (selectedFactors.length < 5) setSelectedFactors([...selectedFactors, factor.id]);
+                          }} disabled={!isSelected && selectedFactors.length >= 5} className={`w-full text-left p-4 rounded-lg border-2 ${isSelected ? 'bg-blue-600' : 'bg-slate-800'} ${!isSelected && selectedFactors.length >= 5 ? 'opacity-50' : ''}`}>
+                            <div className="flex items-center gap-3">
+                              <Icon className="w-5 h-5" />
+                              <div className="font-semibold">{factor.name}</div>
+                              {isSelected && <X className="w-5 h-5 ml-auto" />}
+                            </div>
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              <div className="flex justify-center">
+                <button onClick={() => onComplete({ name: modelName, factors: selectedFactors.map(id => AVAILABLE_FACTORS.find(f => f.id === id)) })} disabled={!canLockIn} className={`flex items-center gap-3 px-8 py-4 rounded-lg text-lg font-bold ${canLockIn ? 'bg-blue-600 hover:bg-blue-700' : 'bg-slate-700 text-slate-500'}`}>
+                  <Lock className="w-5 h-5" />Lock In Your Model
+                </button>
+              </div>
+            </div>
+          );
+        }
+
+        // PHASE 2: MODEL IN ACTION
+        function ModelInAction({ model, onContinue }) {
+          const [analyzing, setAnalyzing] = useState(true);
+          const [expandedPlayer, setExpandedPlayer] = useState(null);
+          const [expandedPeer, setExpandedPeer] = useState(null);
+          
+          useEffect(() => { const t = setTimeout(() => setAnalyzing(false), 2500); return () => clearTimeout(t); }, []);
+          
+          const ratings = PLAYERS.map(p => ({...p, rating: calculateRating(p, model), explanation: getRatingExplanation(p, model)})).sort((a,b) => b.rating - a.rating);
+          const peerRatings = PEER_MODELS.map(pm => ({
+            ...pm,
+            rankings: PLAYERS.map(p => ({...p, rating: calculateRating(p, {factors: pm.factors.map(id => AVAILABLE_FACTORS.find(f => f.id === id))})})).sort((a,b) => b.rating - a.rating)
+          }));
+
+          if (analyzing) return (
+            <div className="max-w-7xl mx-auto">
+              <div className="bg-slate-800 rounded-xl p-12 text-center border border-slate-700">
+                <div className="inline-block animate-spin rounded-full h-12 w-12 border-4 border-slate-600 border-t-blue-500 mb-4"></div>
+                <h2 className="text-2xl font-semibold">Analyzing Players...</h2>
+              </div>
+            </div>
+          );
+
+          return (
+            <div className="max-w-7xl mx-auto">
+              <h1 className="text-4xl font-bold text-blue-400 mb-6">{model.name}</h1>
+              
+              <div className="bg-gradient-to-br from-slate-800 to-slate-900 rounded-xl p-6 mb-8 border border-slate-700">
+                <h3 className="text-lg font-semibold text-blue-400 mb-3">What Your Model Relies On</h3>
+                <p className="text-slate-300 mb-4">
+                  Your model evaluates players by averaging their performance across the {model.factors.length} factors you selected. 
+                  Players who excel in these specific areas will rank higher, while players strong in other areas will rank lower—
+                  even if they're great players. Your model only sees what you told it to see.
+                </p>
+                <div className="flex flex-wrap gap-2">
+                  {model.factors.map(f => <div key={f.id} className="bg-blue-600 px-3 py-1 rounded-full text-sm font-semibold">{f.name}</div>)}
+                </div>
+              </div>
+              
+              <div className="grid lg:grid-cols-3 gap-6">
+                <div className="lg:col-span-2 space-y-3">
+                  <h2 className="text-2xl font-bold mb-4">Your Rankings</h2>
+                  {ratings.map((p, i) => (
+                    <div key={p.id} className="bg-slate-800 rounded-lg border border-slate-700 hover:border-blue-500 cursor-pointer" onClick={() => setExpandedPlayer(expandedPlayer === p.id ? null : p.id)}>
+                      <div className="p-5 flex gap-4">
+                        <div className="text-3xl font-bold text-blue-400">#{i+1}</div>
+                        <div className="flex-1">
+                          <div className="flex justify-between">
+                            <div>
+                              <div className="text-xl font-bold flex items-center gap-2">{p.name} <ChevronDown className={`w-5 h-5 transition ${expandedPlayer === p.id ? 'rotate-180' : ''}`} /></div>
+                              <div className="text-sm text-slate-400">{p.position}, Age {p.age}</div>
+                            </div>
+                            <div className="text-right">
+                              <div className="text-3xl font-bold">{p.rating}</div>
+                              <div className="text-xs text-slate-400">Overall</div>
+                            </div>
+                          </div>
+                          <div className="mt-2 text-sm text-slate-400">{p.explanation}</div>
+                        </div>
+                      </div>
+                      {expandedPlayer === p.id && (
+                        <div className="px-5 pb-5 border-t border-slate-700 pt-4">
+                          <div className="bg-slate-900 rounded-lg p-4">
+                            <div className="text-sm text-slate-400 mb-2">Scouting Report:</div>
+                            <p className="text-slate-300 mb-3">{p.scoutingReport}</p>
+                            <div className="text-sm font-semibold text-slate-400 mb-2">Your Model's View:</div>
+                            <div className="grid grid-cols-2 gap-2">
+                              {model.factors.map(f => (
+                                <div key={f.id} className="bg-slate-800 px-3 py-2 rounded flex justify-between text-sm">
+                                  <span className="text-slate-400">{f.name}:</span>
+                                  <span className="text-white font-semibold">{p.stats[f.id]}</span>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+
+                <div>
+                  <h2 className="text-xl font-bold mb-4 flex items-center gap-2"><Eye className="w-6 h-6" />Other GMs</h2>
+                  {peerRatings.map(pm => (
+                    <div key={pm.name} className="bg-slate-800 rounded-lg border border-slate-700 mb-3">
+                      <button onClick={() => setExpandedPeer(expandedPeer === pm.name ? null : pm.name)} className="w-full text-left p-4">
+                        <div className="font-bold flex justify-between">{pm.name} <ChevronDown className={`w-4 h-4 transition ${expandedPeer === pm.name ? 'rotate-180' : ''}`} /></div>
+                        <div className="text-xs text-slate-400 mb-2">{pm.philosophy}</div>
+                        {expandedPeer !== pm.name && pm.rankings.slice(0,3).map((p,i) => <div key={i} className="text-sm text-slate-300">#{i+1} {p.name}</div>)}
+                      </button>
+                      {expandedPeer === pm.name && (
+                        <div className="px-4 pb-4 border-t border-slate-700 pt-3">
+                          <div className="text-sm font-semibold mb-2">Factors:</div>
+                          <div className="flex flex-wrap gap-1 mb-3">
+                            {pm.factors.map(fid => {
+                              const factor = AVAILABLE_FACTORS.find(f => f.id === fid);
+                              return <div key={fid} className="bg-blue-600 px-2 py-1 rounded text-xs">{factor?.name}</div>;
+                            })}
+                          </div>
+                          <div className="text-sm font-semibold mb-2">Full Rankings:</div>
+                          {pm.rankings.map((p,i) => <div key={i} className="flex justify-between text-sm bg-slate-900 px-3 py-2 rounded mb-1"><span>#{i+1} {p.name}</span><span>{p.rating}</span></div>)}
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div className="bg-slate-800 rounded-xl p-8 border border-slate-700 mt-8">
+                <h3 className="text-xl font-semibold mb-4">Does your ranking feel right?</h3>
+                <p className="text-slate-300 mb-6">Every model sounds confident, but they disagree on who's valuable.</p>
+                <button onClick={onContinue} className="flex items-center gap-2 px-6 py-3 bg-blue-600 hover:bg-blue-700 rounded-lg font-semibold">Continue <ChevronRight className="w-5 h-5" /></button>
+              </div>
+            </div>
+          );
+        }
+
+        // PHASE 3: CONTEXT SHIFT
+        function ContextShift({ model, onContinue, updateCompletion }) {
+          const [showShift, setShowShift] = useState(false);
+          const [showOutcomes, setShowOutcomes] = useState(false);
+          const [showReflection, setShowReflection] = useState(false);
+          const [expandedPlayer, setExpandedPlayer] = useState(null);
+          const [factorsLost, setFactorsLost] = useState([]);
+          const [factorsGained, setFactorsGained] = useState([]);
+          const [submitted, setSubmitted] = useState(false);
+          
+          useEffect(() => {
+            setTimeout(() => setShowShift(true), 500);
+            setTimeout(() => setShowOutcomes(true), 2000);
+            setTimeout(() => setShowReflection(true), 3000);
+          }, []);
+
+          useEffect(() => {
+            if (showOutcomes) {
+              updateCompletion({ executiveSignals: { recognizedChange: true } });
+            }
+          }, [showOutcomes]);
+
+          const rankings = PLAYERS.map(p => ({...p, rating: calculateRating(p, model)})).sort((a,b) => b.rating - a.rating);
+          
+          const actualChanges = Object.entries(CONTEXT_SHIFT.factorImpact).map(([id, mult]) => ({
+            id, name: AVAILABLE_FACTORS.find(f => f.id === id)?.name,
+            change: mult > 1 ? 'increased' : mult < 1 ? 'decreased' : 'same',
+            percent: Math.round((mult - 1) * 100)
+          })).filter(f => f.change !== 'same').sort((a,b) => Math.abs(b.percent) - Math.abs(a.percent));
+
+          const handleSubmit = () => {
+            setSubmitted(true);
+            updateCompletion({ 
+              reflectionSubmitted: true,
+              lostFactors: factorsLost,
+              gainedFactors: factorsGained
+            });
+          };
+
+          return (
+            <div className="max-w-7xl mx-auto">
+              <div className="flex items-center gap-4 mb-8">
+                <Calendar className="w-10 h-10 text-amber-400" />
+                <div>
+                  <h1 className="text-4xl font-bold text-amber-400">Three Years Later... (2029)</h1>
+                  <p className="text-slate-400">How did your 2026 evaluations hold up?</p>
+                </div>
+              </div>
+
+              {showShift && (
+                <div className="bg-amber-900/30 rounded-xl p-8 mb-8 border-2 border-amber-700/50">
+                  <h2 className="text-2xl font-bold text-amber-300 mb-4 flex items-center gap-2"><AlertCircle className="w-6 h-6" />The Game Changed</h2>
+                  <div className="grid md:grid-cols-2 gap-4">
+                    {CONTEXT_SHIFT.changes.map((c, i) => <div key={i} className="bg-slate-800/70 p-4 rounded text-sm text-amber-200">{c}</div>)}
+                  </div>
+                </div>
+              )}
+
+              {showOutcomes && (
+                <div className="space-y-4 mb-8">
+                  {rankings.map((p, i) => {
+                    const delta = p.postShift.performanceDelta;
+                    const bg = delta > 15 ? 'bg-green-900/50 border-green-700' : delta < -10 ? 'bg-red-900/50 border-red-700' : 'bg-slate-800 border-slate-700';
+                    return (
+                      <div key={p.id} className={`rounded-lg p-6 border-2 ${bg} cursor-pointer`} onClick={() => setExpandedPlayer(expandedPlayer === p.id ? null : p.id)}>
+                        <div className="flex gap-6">
+                          <div className="text-2xl font-bold text-slate-400">#{i+1}</div>
+                          <div className="flex-1">
+                            <div className="flex justify-between mb-3">
+                              <div>
+                                <div className="text-2xl font-bold flex items-center gap-2">{p.name} <ChevronDown className={`w-5 h-5 transition ${expandedPlayer === p.id ? 'rotate-180' : ''}`} /></div>
+                                <div className="text-sm text-slate-400">{p.position}</div>
+                              </div>
+                              <div className="text-3xl font-bold">{p.rating}</div>
+                            </div>
+                            <div className="mb-3 pb-3 border-b border-slate-700">
+                              <div className="text-sm font-semibold mb-1">
+                                <span className={delta > 15 ? 'text-green-400' : delta < -10 ? 'text-red-400' : 'text-yellow-400'}>Actual: {p.postShift.outcome}</span>
+                                <span className="ml-3 text-slate-400">({delta > 0 ? '+' : ''}{delta})</span>
+                              </div>
+                              <p className="text-sm text-slate-300">{p.postShift.reason}</p>
+                            </div>
+                            {expandedPlayer === p.id && (
+                              <div className="bg-slate-900 rounded-lg p-4">
+                                <div className="text-sm text-slate-400 mb-2">Scouting Report:</div>
+                                <p className="text-slate-300">{p.scoutingReport}</p>
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+
+              {showReflection && !submitted && (
+                <div className="bg-slate-800 rounded-xl p-8 border border-slate-700 mb-8">
+                  <h3 className="text-xl font-semibold mb-4">What Did Your Model Miss?</h3>
+                  <p className="text-slate-300 mb-6">Look at the shift. Which factors lost value? Which would have helped?</p>
+                  
+                  <div className="grid md:grid-cols-2 gap-6 mb-6">
+                    <div>
+                      <h4 className="font-semibold mb-3">Factors that LOST value:</h4>
+                      <div className="space-y-2">
+                        {AVAILABLE_FACTORS.map(f => (
+                          <label key={f.id} className="flex items-center gap-2 cursor-pointer">
+                            <input type="checkbox" checked={factorsLost.includes(f.id)} onChange={() => setFactorsLost(prev => prev.includes(f.id) ? prev.filter(x => x !== f.id) : [...prev, f.id])} className="w-4 h-4" />
+                            <span className="text-sm">{f.name}</span>
+                          </label>
+                        ))}
+                      </div>
+                    </div>
+                    <div>
+                      <h4 className="font-semibold mb-3">Factors you wish you'd prioritized:</h4>
+                      <div className="space-y-2">
+                        {AVAILABLE_FACTORS.map(f => (
+                          <label key={f.id} className="flex items-center gap-2 cursor-pointer">
+                            <input type="checkbox" checked={factorsGained.includes(f.id)} onChange={() => setFactorsGained(prev => prev.includes(f.id) ? prev.filter(x => x !== f.id) : [...prev, f.id])} className="w-4 h-4" />
+                            <span className="text-sm">{f.name}</span>
+                          </label>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+
+                  <button onClick={handleSubmit} className="px-6 py-3 bg-blue-600 hover:bg-blue-700 rounded-lg font-semibold">Submit Reflection</button>
+                </div>
+              )}
+
+              {submitted && (
+                <>
+                  <div className="bg-blue-900/30 rounded-xl p-8 border border-blue-700 mb-8">
+                    <h4 className="text-xl font-semibold mb-4">Here's What Actually Changed:</h4>
+                    <div className="space-y-2">
+                      {actualChanges.map(f => (
+                        <div key={f.id} className="flex justify-between items-center bg-slate-800/50 px-4 py-3 rounded">
+                          <span className="font-semibold">{f.name}</span>
+                          <span className={f.percent > 0 ? 'text-green-400' : 'text-red-400'}>{f.percent > 0 ? '+' : ''}{f.percent}% {f.change}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="bg-slate-800 rounded-xl p-8 border border-slate-700">
+                    <h3 className="text-xl font-semibold mb-4">Models Don't Know When They're Obsolete</h3>
+                    <p className="text-slate-300 mb-6">Your model is still confident. It's measuring what it always measured. But the game evolved. This is the challenge: models don't know when the world has changed.</p>
+                    <button onClick={onContinue} className="flex items-center gap-2 px-6 py-3 bg-blue-600 hover:bg-blue-700 rounded-lg font-semibold">Continue <ChevronRight className="w-5 h-5" /></button>
+                  </div>
+                </>
+              )}
+            </div>
+          );
+        }
+
+        // PHASE 4: HOW MODELS WORK
+        function HowModelsWork({ model, onContinue, updateCompletion }) {
+          const examplePlayer = PLAYERS.find(p => p.id === 'p2');
+          const rating = calculateRating(examplePlayer, model);
+          const factorValues = model.factors.map(f => examplePlayer.stats[f.id]);
+          const sum = factorValues.reduce((a,b) => a+b, 0);
+
+          useEffect(() => {
+            updateCompletion({ executiveSignals: { reframedModel: true } });
+          }, []);
+
+          return (
+            <div className="max-w-5xl mx-auto">
+              <h1 className="text-4xl font-bold text-blue-400 mb-8">What Your Model Can and Can't Do</h1>
+
+              <div className="bg-slate-800 rounded-xl p-8 border border-slate-700 mb-8">
+                <h2 className="text-2xl font-bold text-blue-400 mb-4">Your Model Did Its Job Perfectly</h2>
+                <p className="text-slate-300 mb-6">
+                  Your model "{model.name}" isn't broken. It did exactly what you told it to do. 
+                  Here's how it evaluated {examplePlayer.name}:
+                </p>
+
+                <div className="bg-slate-900 rounded-lg p-6">
+                  <div className="text-sm text-slate-400 mb-4">Step 1: Look at the factors you chose</div>
+                  <div className="space-y-2 mb-6">
+                    {model.factors.map((f, i) => (
+                      <div key={f.id} className="flex justify-between items-center bg-slate-800 px-4 py-3 rounded">
+                        <span className="text-white font-semibold">{f.name}</span>
+                        <span className="text-blue-400 text-lg font-bold">{factorValues[i]}</span>
+                      </div>
+                    ))}
+                  </div>
+
+                  <div className="text-sm text-slate-400 mb-2">Step 2: Add them up</div>
+                  <div className="bg-slate-800 px-4 py-3 rounded mb-4 text-center">
+                    <span className="text-white">{factorValues.join(' + ')} = </span>
+                    <span className="text-blue-400 text-xl font-bold">{sum}</span>
+                  </div>
+
+                  <div className="text-sm text-slate-400 mb-2">Step 3: Divide by {model.factors.length} factors</div>
+                  <div className="bg-slate-800 px-4 py-3 rounded text-center">
+                    <span className="text-white">{sum} ÷ {model.factors.length} = </span>
+                    <span className="text-green-400 text-2xl font-bold">{rating}</span>
+                  </div>
+                </div>
+
+                <p className="text-slate-300 mt-6 italic">
+                  The math is correct. The model isn't broken. It's just doing what you told it to do.
+                </p>
+              </div>
+
+              <div className="bg-slate-800 rounded-xl p-8 border border-slate-700 mb-8">
+                <h2 className="text-2xl font-bold text-amber-400 mb-4">But Your Model Can't See the Future</h2>
+                
+                <div className="grid md:grid-cols-2 gap-6">
+                  <div className="bg-slate-900 rounded-lg p-6 border-2 border-blue-600">
+                    <h3 className="text-lg font-semibold text-blue-400 mb-4">What Your Model Measured</h3>
+                    <div className="space-y-3">
+                      {model.factors.map(f => (
+                        <div key={f.id} className="flex items-center gap-3">
+                          <CheckCircle className="w-5 h-5 text-blue-400 flex-shrink-0" />
+                          <div>
+                            <div className="font-semibold text-white">{f.name}</div>
+                            <div className="text-xs text-slate-400">Measured perfectly in 2026</div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="bg-slate-900 rounded-lg p-6 border-2 border-amber-600">
+                    <h3 className="text-lg font-semibold text-amber-400 mb-4">What Changed in 2029</h3>
+                    <div className="space-y-3">
+                      <div className="flex items-center gap-3">
+                        <X className="w-5 h-5 text-red-400 flex-shrink-0" />
+                        <div>
+                          <div className="font-semibold text-white">4-Point Line Added</div>
+                          <div className="text-xs text-slate-400">Your model didn't know about this</div>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-3">
+                        <X className="w-5 h-5 text-red-400 flex-shrink-0" />
+                        <div>
+                          <div className="font-semibold text-white">Hand-Checking Allowed</div>
+                          <div className="text-xs text-slate-400">Your model didn't know about this</div>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-3">
+                        <X className="w-5 h-5 text-red-400 flex-shrink-0" />
+                        <div>
+                          <div className="font-semibold text-white">Physical Play Emphasized</div>
+                          <div className="text-xs text-slate-400">Your model didn't know about this</div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="mt-6 bg-amber-900/20 border border-amber-700 rounded-lg p-6">
+                  <div className="flex items-start gap-4">
+                    <ArrowRight className="w-6 h-6 text-amber-400 flex-shrink-0 mt-1" />
+                    <div>
+                      <p className="text-slate-300 mb-2">
+                        Your model measured three-point shooting, but it didn't know the 4-point line was coming.
+                      </p>
+                      <p className="text-slate-300 mb-2">
+                        Your model measured speed, but it didn't know hand-checking would slow the game down.
+                      </p>
+                      <p className="text-slate-300 font-semibold">
+                        How could it? Those changes didn't exist when you built it in 2026.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="bg-slate-800 rounded-xl p-8 border border-slate-700 mb-8">
+                <h2 className="text-2xl font-bold text-white mb-6">Three Things All Models Miss</h2>
+
+                <div className="space-y-6">
+                  <div className="bg-slate-900 rounded-lg p-6 border-l-4 border-red-500">
+                    <h3 className="text-xl font-semibold text-red-400 mb-3">1. Models Are Frozen in Time</h3>
+                    <p className="text-slate-300 mb-3">
+                      Your model was built for the 2026 NBA. It's still thinking like it's 2026, even though it's now 2029.
+                    </p>
+                    <p className="text-slate-400 text-sm italic">
+                      It doesn't update itself when the rules change. It doesn't know the game evolved. It's stuck in the past.
+                    </p>
+                  </div>
+
+                  <div className="bg-slate-900 rounded-lg p-6 border-l-4 border-amber-500">
+                    <h3 className="text-xl font-semibold text-amber-400 mb-3">2. Models Have Designed Blind Spots</h3>
+                    <p className="text-slate-300 mb-3">
+                      You chose {model.factors.length} factors out of 15 available. That means you ignored {15 - model.factors.length} factors.
+                    </p>
+                    <p className="text-slate-400 text-sm italic">
+                      Some of those ignored factors became critical after the game changed. Your model can't see what you didn't tell it to look at.
+                    </p>
+                  </div>
+
+                  <div className="bg-slate-900 rounded-lg p-6 border-l-4 border-blue-500">
+                    <h3 className="text-xl font-semibold text-blue-400 mb-3">3. Models Stay Confident Even When Wrong</h3>
+                    <p className="text-slate-300 mb-3">
+                      Tyler Hayes: Your model rated him around {calculateRating(PLAYERS.find(p => p.id === 'p2'), model)}. He became worth 28 points more.
+                    </p>
+                    <p className="text-slate-300 mb-3">
+                      DeAndre Morrison: Your model rated him highly. He lost 18 points of value.
+                    </p>
+                    <p className="text-slate-400 text-sm italic">
+                      Your model was equally confident about both. Confidence is just math—it doesn't mean the model is right.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="bg-gradient-to-br from-slate-800 to-slate-900 rounded-xl p-8 border border-slate-700">
+                <h3 className="text-xl font-semibold text-white mb-4">The Lesson</h3>
+                <div className="space-y-3 text-slate-300 mb-6">
+                  <p>• Models are tools, not oracles. They do exactly what you tell them to do.</p>
+                  <p>• They're only as good as the world they were built for.</p>
+                  <p>• When the world changes, the model needs to change too—but it won't tell you that.</p>
+                  <p className="font-semibold text-white">• The danger is: models always sound confident, even when they're obsolete.</p>
+                </div>
+                <p className="text-sm text-slate-400 mb-6">
+                  This isn't unique to basketball. Credit scores, hiring algorithms, college admissions—they all work the same way. 
+                  Someone picks factors. The model measures them. The world changes. The model doesn't notice.
+                </p>
+                <button onClick={onContinue} className="flex items-center gap-2 px-6 py-3 bg-blue-600 hover:bg-blue-700 rounded-lg font-semibold">
+                  Finish <ChevronRight className="w-5 h-5" />
+                </button>
+              </div>
+            </div>
+          );
+        }
+
+        // PHASE 5: COMPLETION SCREEN
+        function CompletionScreen({ result, model }) {
+          const [email, setEmail] = useState('');
+          const [studentName, setStudentName] = useState('');
+          const [emailSent, setEmailSent] = useState(false);
+          const [sending, setSending] = useState(false);
+
+          const tierColor = result.tier === 'Gold' ? 'text-yellow-400' : result.tier === 'Silver' ? 'text-slate-300' : 'text-amber-600';
+          const tierDescription = result.tier === 'Gold' 
+            ? 'You demonstrated executive judgment — recognizing when a confident model stopped being a reliable guide.'
+            : result.tier === 'Silver'
+            ? 'You identified what your model missed when the world shifted.'
+            : 'You completed the simulation and experienced how models can become obsolete.';
+
+          const sendCompletionEmail = async () => {
+            if (!email.trim() || !studentName.trim()) return;
+            
+            setSending(true);
+            const emailBody = `${studentName},
+
+You've completed the Build-a-Model experience. This email confirms your participation and provides your claim code for the record.
+
+Claim Code: ${result.claimCode}
+
+You built a model called "${model.name}" that evaluated players based on factors you selected. That model produced confident ratings—specific numbers, clear rankings, decisive outputs. That confidence came from the design: you chose what mattered, the model measured it perfectly, and the math did exactly what you told it to do. The model didn't know what it wasn't measuring. It couldn't.
+
+Different models built from the same data can disagree completely, and all of them can sound equally confident.
+
+— BOW Sports Capital`;
+
+            console.log('Email would be sent to:', email);
+            console.log('Subject: Your model is complete — claim code enclosed');
+            console.log('Body:', emailBody);
+            
+            setTimeout(() => {
+              setEmailSent(true);
+              setSending(false);
+            }, 1000);
+          };
+
+          return (
+            <div className="max-w-4xl mx-auto text-center">
+              <Trophy className={`w-24 h-24 mx-auto mb-6 ${tierColor}`} />
+              <h1 className="text-5xl font-bold text-white mb-8">Simulation Complete</h1>
+              
+              <div className="bg-slate-800 rounded-xl p-8 mb-8 border border-slate-700">
+                <div className="text-sm text-slate-400 uppercase tracking-wide mb-3">Claim Code</div>
+                <div className="text-3xl font-mono text-blue-400 mb-8 bg-slate-900 py-4 px-6 rounded-lg border border-blue-700">
+                  {result.claimCode}
+                </div>
+
+                <div className="text-sm text-slate-400 uppercase tracking-wide mb-3">Tier Earned</div>
+                <div className={`text-4xl font-bold mb-4 ${tierColor}`}>
+                  {result.tier}
+                </div>
+                <p className="text-slate-300 max-w-2xl mx-auto">{tierDescription}</p>
+              </div>
+
+              {!emailSent ? (
+                <div className="bg-slate-800 rounded-xl p-6 border border-slate-700 mb-6">
+                  <h3 className="text-lg font-semibold text-white mb-3">Receive Your Completion Record</h3>
+                  <p className="text-slate-400 text-sm mb-4">
+                    Enter your details to receive your claim code and a brief summary of what you just experienced.
+                  </p>
+                  <div className="max-w-md mx-auto space-y-3">
+                    <input type="text" value={studentName} onChange={(e) => setStudentName(e.target.value)} placeholder="Your name" className="w-full bg-slate-900 border border-slate-600 rounded-lg px-4 py-3 text-white placeholder-slate-500 focus:outline-none focus:border-blue-500" />
+                    <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="your.email@example.com" className="w-full bg-slate-900 border border-slate-600 rounded-lg px-4 py-3 text-white placeholder-slate-500 focus:outline-none focus:border-blue-500" />
+                    <button onClick={sendCompletionEmail} disabled={!email.trim() || !studentName.trim() || sending} className="w-full px-6 py-3 bg-blue-600 hover:bg-blue-700 disabled:bg-slate-700 disabled:text-slate-500 rounded-lg font-semibold transition">
+                      {sending ? 'Sending...' : 'Send Completion Email'}
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <div className="bg-green-900/30 rounded-xl p-6 border border-green-700 mb-6">
+                  <p className="text-green-400 font-semibold mb-2">✓ Email Sent</p>
+                  <p className="text-slate-300 text-sm">Check {email} for your completion record.</p>
+                </div>
+              )}
+
+              <div className="bg-blue-900/30 rounded-xl p-6 border border-blue-700">
+                <p className="text-slate-300">
+                  You've experienced how models work—and why they fail when the world changes.
+                </p>
+              </div>
+            </div>
+          );
+        }
+
+        // MAIN APP
+        function App() {
+          const [phase, setPhase] = useState(1);
+          const [model, setModel] = useState(null);
+          const [originalRankings, setOriginalRankings] = useState([]);
+          const [completionState, setCompletionState] = useState({
+            modelBuilt: false,
+            modelLocked: false,
+            reflectionSubmitted: false,
+            lostFactors: [],
+            gainedFactors: [],
+            executiveSignals: {
+              recognizedChange: false,
+              recognizedBlindSpot: false,
+              reframedModel: false
+            }
+          });
+          const [result, setResult] = useState(null);
+
+          const updateCompletion = (updates) => {
+            setCompletionState(prev => {
+              const newState = { ...prev };
+              if (updates.executiveSignals) {
+                newState.executiveSignals = { ...prev.executiveSignals, ...updates.executiveSignals };
+                delete updates.executiveSignals;
+              }
+              return { ...newState, ...updates };
+            });
+          };
+
+          const handleModelComplete = (m) => {
+            setModel(m);
+            setOriginalRankings(PLAYERS.map(p => ({...p, rating: calculateRating(p, m)})));
+            updateCompletion({ modelBuilt: true, modelLocked: true });
+            setPhase(2);
+          };
+
+          const handleFinish = async () => {
+            const finalResult = finalizeCompletion(completionState, model);
+            setResult(finalResult);
+            setPhase(5);
+          };
+
+          return (
+            <div className="min-h-screen bg-slate-900 text-white p-8">
+              {phase === 1 && <ModelBuilder onComplete={handleModelComplete} />}
+              {phase === 2 && <ModelInAction model={model} onContinue={() => setPhase(3)} />}
+              {phase === 3 && <ContextShift model={model} onContinue={() => setPhase(4)} updateCompletion={updateCompletion} />}
+              {phase === 4 && <HowModelsWork model={model} onContinue={handleFinish} updateCompletion={updateCompletion} />}
+              {phase === 5 && result && <CompletionScreen result={result} model={model} />}
+            </div>
+          );
+        }
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>
